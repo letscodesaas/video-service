@@ -22,6 +22,7 @@ app.post("/upload", async (c) => {
   try {
     const data = await c.req.parseBody();
     const file_name = data["video"] as File;
+    const file_type = file_name.name.split(".")[1]
     const file_uploader_worker = await worker(
       `${_file_upload_path}/file_upload_thread.js`,
       {
@@ -31,7 +32,7 @@ app.post("/upload", async (c) => {
       },
     );
 
-    if (file_uploader_worker) {
+    if (file_uploader_worker && file_type !== "mp4") {
       const video_preprocess = await worker(
         `${_file_upload_path}/video_process_thread.js`,
         {
