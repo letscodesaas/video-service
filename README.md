@@ -117,3 +117,20 @@ src/
 
 - Current preprocessing output filename is fixed as `video.mp4`.
 - Upload + preprocessing tasks are handled in worker threads to keep request handling responsive.
+
+## Git Ignore For Thread JS Files
+
+The repository keeps worker thread source in TypeScript under `src/threads`. If JavaScript files are generated there, they should not be committed.
+
+This project ignores them with:
+
+```gitignore
+src/threads/*.js
+```
+
+If these files were committed earlier, remove them from Git tracking once (without deleting local files):
+
+```bash
+git rm --cached src/threads/*.js
+git commit -m "chore: stop tracking generated thread js files"
+```
