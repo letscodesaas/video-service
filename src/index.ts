@@ -12,6 +12,10 @@ import { delete_file } from "./utils/delete_file.utils.js";
 import { createWriteStream } from "node:fs";
 import { pipeline } from "stream/promises";
 import { statusMonitor } from "hono-status-monitor";
+import dotenv from "dotenv";
+dotenv.config({
+  path:'.env'
+})
 
 
 const _dirname = fileURLToPath(import.meta.url);
@@ -22,6 +26,8 @@ const _video_path = path.join(_dirname, "../", "preprocess_video_files");
 is_upload_file_exists();
 is_preprocess_file_exists();
 is_hls_file_exists();
+
+const port = process.env.PORT || 3000;
 
 const app = new Hono();
 const monitor = statusMonitor();
@@ -72,7 +78,7 @@ app.post("/upload", async (c) => {
 
 serve({
   fetch: app.fetch,
-  port: 3000,
+  port: port as number,
 });
 monitor.initSocket(serve);
-console.log("server is on")
+console.log("server is on",port)
