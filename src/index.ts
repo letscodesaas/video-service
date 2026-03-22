@@ -75,3 +75,4 @@ serve({
   port: 3000,
 });
 monitor.initSocket(serve);
+console.log("server is on")
