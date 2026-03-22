@@ -14,16 +14,13 @@ importers:
       hono:
         specifier: ^4.12.8
         version: 4.12.8
-      ws:
-        specifier: ^8.19.0
-        version: 8.19.0
+      hono-status-monitor:
+        specifier: ^1.0.7
+        version: 1.0.7(@hono/node-server@1.19.11(hono@4.12.8))(hono@4.12.8)
     devDependencies:
       '@types/node':
         specifier: ^20.11.17
         version: 20.19.37
-      '@types/ws':
-        specifier: ^8.18.1
-        version: 8.18.1
       tsx:
         specifier: ^4.7.1
         version: 4.21.0
@@ -198,9 +195,6 @@ packages:
   '@types/node@20.19.37':
     resolution: {integrity: sha512-8kzdPJ3FsNsVIurqBs7oodNnCEVbni9yUEkaHbgptDACOPW04jimGagZ51E6+lXUwJjgnBw+hyko/lkFWCldqw==}
 
-  '@types/ws@8.18.1':
-    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
-
   esbuild@0.27.4:
     resolution: {integrity: sha512-Rq4vbHnYkK5fws5NF7MYTU68FPRE1ajX7heQ/8QXXWqNgqqJ/GkmmyxIzUnf2Sr/bakf8l54716CcMGHYhMrrQ==}
     engines: {node: '>=18'}
@@ -213,6 +207,16 @@ packages:
 
   get-tsconfig@4.13.6:
     resolution: {integrity: sha512-shZT/QMiSHc/YBLxxOkMtgSid5HFoauqCE3/exfsEcwg1WkeqjG+V40yBbBrsD+jW2HDXcs28xOfcbm2jI8Ddw==}
+
+  hono-status-monitor@1.0.7:
+    resolution: {integrity: sha512-OtOYnmtSc4Z1UmnXlNpYVNPe7aogfNtZFxGR3clT95tp0iL9RxwbJeCzSx0ihHW3nlxcvWY9AYQffbU+rrgxvQ==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@hono/node-server': '*'
+      hono: '>=4.0.0'
+    peerDependenciesMeta:
+      '@hono/node-server':
+        optional: true
 
   hono@4.12.8:
     resolution: {integrity: sha512-VJCEvtrezO1IAR+kqEYnxUOoStaQPGrCmX3j4wDTNOcD1uRPFpGlwQUIW8niPuvHXaTUxeOUl5MMDGrl+tmO9A==}
@@ -233,18 +237,6 @@ packages:
 
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
-
-  ws@8.19.0:
-    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
 
 snapshots:
 
@@ -334,10 +326,6 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/ws@8.18.1':
-    dependencies:
-      '@types/node': 20.19.37
-
   esbuild@0.27.4:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.27.4
@@ -374,6 +362,12 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
+  hono-status-monitor@1.0.7(@hono/node-server@1.19.11(hono@4.12.8))(hono@4.12.8):
+    dependencies:
+      hono: 4.12.8
+    optionalDependencies:
+      '@hono/node-server': 1.19.11(hono@4.12.8)
+
   hono@4.12.8: {}
 
   resolve-pkg-maps@1.0.0: {}
@@ -388,5 +382,3 @@ snapshots:
   typescript@5.9.3: {}
 
   undici-types@6.21.0: {}
-
-  ws@8.19.0: {}
