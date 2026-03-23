@@ -2,22 +2,19 @@ import { createReadStream, readdirSync, rmdir, unlink } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { WebHook_Handler } from "../webhook/webhook.js";
 
 const _dirname = fileURLToPath(import.meta.url);
 const _filename = path.join(_dirname, "../", "../", "hls_video_files");
 
-export class File_uploader_Serivce extends WebHook_Handler {
+export class File_uploader_Serivce{
   private access_token: string;
   private secret_token: string;
   private bucket: string;
   constructor(
     access_token: string,
     secret_token: string,
-    url: string,
     bucket_name: string,
   ) {
-    super(url);
     this.access_token = access_token;
     this.secret_token = secret_token;
     this.bucket = bucket_name;
@@ -54,7 +51,6 @@ export class File_uploader_Serivce extends WebHook_Handler {
       const obj = {
         filepath: `${_filename}/${foldername}`,
       };
-      await this.handler(obj, "secret");
       for (const f of files) {
         unlink(`${_filename}/${foldername}/${f}`, (err) => {
           console.log(err);
@@ -63,6 +59,7 @@ export class File_uploader_Serivce extends WebHook_Handler {
       rmdir(`${_filename}/${foldername}`, (err) => {
         console.log(err);
       });
+      return obj;
     } catch (error) {
       throw new Error(String(error));
     }

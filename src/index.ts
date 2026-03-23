@@ -14,6 +14,7 @@ import { pipeline } from "stream/promises";
 import { statusMonitor } from "hono-status-monitor";
 import { File_uploader_Serivce } from "./service/upload_file.services.js";
 import dotenv from "dotenv";
+import { cors } from "hono/cors";
 dotenv.config({
   path: ".env",
 });
@@ -22,18 +23,33 @@ const _dirname = fileURLToPath(import.meta.url);
 const _filename = path.join(_dirname, "../", "upload");
 const _file_upload_path = path.join(_dirname, "../", "threads");
 const _video_path = path.join(_dirname, "../", "preprocess_video_files");
-const _file_uploader = new File_uploader_Serivce("", "","","editoral");
+
+/*
+@params
+new File_uploader_Serivce(AccessKey,SecretKey,BucketName) 
+ */
+const _file_uploader = new File_uploader_Serivce("", "", "editoral");
 
 is_upload_file_exists();
 is_preprocess_file_exists();
 is_hls_file_exists();
 
 const port = process.env.PORT || 3000;
+const corsOrigin = process.env.CORS_ORIGIN || "*";
 
 const app = new Hono();
 const monitor = statusMonitor();
 
 app.use("*", monitor.middleware);
+app.use(
+  "*",
+  cors({
+    origin: corsOrigin,
+    allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    maxAge: 86400,
+  })
+);
 
 app.route("/status", monitor.routes);
 
@@ -63,15 +79,13 @@ app.post("/upload", async (c) => {
       await _file_uploader.upload(file_names);
       await delete_file(`${_video_path}/${file_names}.mp4`);
     }
-
     await worker(`${_file_upload_path}/hls_process_thread.js`, {
       file_names: file_names,
       video_path: `${_filename}/${file_names}.mp4`,
     });
-    await _file_uploader.upload(file_names);
+    const response = await _file_uploader.upload(file_names);
     await delete_file(`${_filename}/${file_name.name}`);
-
-    return c.json({ message: "success" });
+    return c.json({ message: "success",data:response.filepath });
   } catch (error) {
     c.json({ message: "Internal server error" });
   }
