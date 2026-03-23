@@ -12,16 +12,17 @@ import { delete_file } from "./utils/delete_file.utils.js";
 import { createWriteStream } from "node:fs";
 import { pipeline } from "stream/promises";
 import { statusMonitor } from "hono-status-monitor";
+import { File_uploader_Serivce } from "./service/upload_file.services.js";
 import dotenv from "dotenv";
 dotenv.config({
-  path:'.env'
-})
-
+  path: ".env",
+});
 
 const _dirname = fileURLToPath(import.meta.url);
 const _filename = path.join(_dirname, "../", "upload");
 const _file_upload_path = path.join(_dirname, "../", "threads");
 const _video_path = path.join(_dirname, "../", "preprocess_video_files");
+const _file_uploader = new File_uploader_Serivce("", "","","editoral");
 
 is_upload_file_exists();
 is_preprocess_file_exists();
@@ -31,7 +32,6 @@ const port = process.env.PORT || 3000;
 
 const app = new Hono();
 const monitor = statusMonitor();
-
 
 app.use("*", monitor.middleware);
 
@@ -60,6 +60,7 @@ app.post("/upload", async (c) => {
         file_names: file_names,
         video_path: `${_video_path}/${file_names}.mp4`,
       });
+      await _file_uploader.upload(file_names);
       await delete_file(`${_video_path}/${file_names}.mp4`);
     }
 
@@ -67,7 +68,7 @@ app.post("/upload", async (c) => {
       file_names: file_names,
       video_path: `${_filename}/${file_names}.mp4`,
     });
-
+    await _file_uploader.upload(file_names);
     await delete_file(`${_filename}/${file_name.name}`);
 
     return c.json({ message: "success" });
@@ -81,4 +82,4 @@ serve({
   port: port as number,
 });
 monitor.initSocket(serve);
-console.log("server is on",port)
+console.log("server is on", port);
