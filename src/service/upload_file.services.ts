@@ -43,7 +43,7 @@ export class File_uploader_Serivce{
         await s3.send(
           new PutObjectCommand({
             Bucket: this.bucket,
-            Key: `${foldername}/${f}`,
+            Key: `videos/${foldername}/${f}`,
             Body: file_stream,
           }),
         );
