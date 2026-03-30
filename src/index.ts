@@ -28,7 +28,11 @@ const _video_path = path.join(_dirname, "../", "preprocess_video_files");
 @params
 new File_uploader_Serivce(AccessKey,SecretKey,BucketName) 
  */
-const _file_uploader = new File_uploader_Serivce("", "", "editoral");
+const _file_uploader = new File_uploader_Serivce(
+  process.env.ACCESS_KEY!,
+  process.env.SECRET_KEY!,
+  process.env.BUCKET_NAME!,
+);
 
 is_upload_file_exists();
 is_preprocess_file_exists();
@@ -48,7 +52,7 @@ app.use(
     allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     maxAge: 86400,
-  })
+  }),
 );
 
 app.route("/status", monitor.routes);
@@ -78,14 +82,22 @@ app.post("/upload", async (c) => {
       });
       await _file_uploader.upload(file_names);
       await delete_file(`${_video_path}/${file_names}.mp4`);
+      await delete_file(`${_filename}/${file_name.name}`);
+      return c.json({
+        message: "success",
+        data: `https://d1fsnyqasitriy.cloudfront.net/videos/${file_names}/index.m3u8`,
+      });
     }
     await worker(`${_file_upload_path}/hls_process_thread.js`, {
       file_names: file_names,
       video_path: `${_filename}/${file_names}.mp4`,
     });
-    const response = await _file_uploader.upload(file_names);
+    await _file_uploader.upload(file_names);
     await delete_file(`${_filename}/${file_name.name}`);
-    return c.json({ message: "success",data:response.filepath });
+    return c.json({
+      message: "success",
+      data: `https://d1fsnyqasitriy.cloudfront.net/videos/${file_names}/index.m3u8`,
+    });
   } catch (error) {
     c.json({ message: "Internal server error" });
   }
